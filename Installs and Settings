@@ -1,0 +1,59 @@
+
+####Simple config for Nginx Laravel Certbot
+
+```
+server {
+  set $my_host tadvlasov.ru;
+  server_name $my_host;
+
+  root /var/www/$my_host/public;
+
+  add_header X-Frame-Options "SAMEORIGIN";
+  add_header X-Content-Type-Options "nosniff";
+
+  index index.php;
+
+  charset utf-8;
+
+  location / {
+      try_files $uri $uri/ /index.php?$query_string;
+  }
+
+  location = /favicon.ico { access_log off; log_not_found off; }
+  location = /robots.txt  { access_log off; log_not_found off; }
+
+  error_page 404 /index.php;
+
+  location ~ \.php$ {
+      fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+      fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+      include fastcgi_params;
+  }
+
+  location ~ /\.(?!well-known).* {
+      deny all;
+  }
+
+  listen [::]:443 ssl; # managed by Certbot
+  listen 443 ssl; # managed by Certbot
+  ssl_certificate /etc/letsencrypt/live/$my_host/fullchain.pem; # managed by Certbot
+  ssl_certificate_key /etc/letsencrypt/live/$my_host/privkey.pem; # managed by Certbot
+  include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+  ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+server {
+  set $my_host tadvlasov.ru
+  if ($host = $my_host) {
+      return 301 https://$host$request_uri;
+  } # managed by Certbot
+	listen 80;
+	listen [::]:80;
+
+	server_name reviews-service.tadvlasov.ru;
+    return 404; # managed by Certbot
+}
+```
+
+Cerbot run `certbot --nginx`
