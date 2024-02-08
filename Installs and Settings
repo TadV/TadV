@@ -1,5 +1,5 @@
 
-####Simple config for Nginx Laravel Certbot
+#### Simple config for Nginx Laravel Certbot
 
 ```
 server {
@@ -57,3 +57,38 @@ server {
 ```
 
 Cerbot run `certbot --nginx`
+
+#### Laravel new project
+Run:
+
+`cd /var/www/`
+`composer create-project laravel/laravel tadvlasov.ru`
+
+#### Laravel files permissions
+If have permissions problems 
+
+`find /var/www/tadvlasov.ru -type f -exec chmod 644 {} \;`
+`find /var/www/tadvlasov.ru -type d -exec chmod 755 {} \;`
+
+`chown -R $USER:www-data storage`
+`chown -R $USER:www-data bootstrap/cache/`
+
+`chmod -R 775 storage`
+`chmod -R 775 bootstrap/cache/`
+
+### Add Laravel Breeze Starter Kit
+
+Previosly check rigth connection to site DB in `.env`
+
+For example create db and user at postgres
+`create user tad_app;`
+`create database tad_app;`
+`GRANT ALL PRIVILEGES ON DATABASE tad_app TO tad_app;`
+`GRANT ALL ON SCHEMA public TO tad_app;`
+`ALTER DATABASE tad_app OWNER TO tad_app;`
+`ALTER USER tad_app WITH PASSWORD 'XXX7yTBXXX'`
+
+Then follow https://laravel.com/docs/10.x/starter-kits#laravel-breeze-installation
+
+Done
+
